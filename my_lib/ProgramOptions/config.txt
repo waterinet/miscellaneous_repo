@@ -1,0 +1,18 @@
+#number of work threads
+num_threads=4
+#use to filter records
+max_interval=10
+[datasource]
+database=DB_VM
+username=scott
+password=tiger
+[http_server]
+ip=192.168.1.129
+port=8080
+path=Bus/prior
+connection_timeout=5
+transfer_timeout=10
+max_connections=20
+[log]
+console.low_level=1
+file.low_level=1
