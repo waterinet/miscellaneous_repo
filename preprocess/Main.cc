@@ -2,6 +2,7 @@
 #include <fstream>
 #include "SrcLine.h"
 #include "SrcFile.h"
+#include "SrcCIter.h"
 
 using namespace std;
 
@@ -34,11 +35,20 @@ int main()
 	}
 	*/
     SrcFile sf;
-	sf.read("1.txt");
-	sf[8] = "    long";
-	for (int i = 0; i < sf.size(); i++) {
-		cout << sf[i] << endl;
+	sf.read("Main.cc");
+	SrcFile::const_iterator cit;
+	for (cit = sf.begin(); cit != sf.end(); cit++) {
+		cout << *cit << " * " << cit->size() <<  endl;
 	}
-
+	/*
+	SrcFile::line_iterator line_it;
+	SrcLine::iterator it;
+	for (line_it = sf.line_begin(); line_it != sf.line_end(); ++line_it) {
+        for (it = line_it->begin(); it != line_it->end(); ++it) {
+			cout << *it << " ";
+		}
+		cout << endl;
+	}
+    */
 }
 

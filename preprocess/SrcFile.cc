@@ -1,4 +1,5 @@
 #include "SrcFile.h"
+#include "SrcCIter.h"
 #include <fstream>
 
 using namespace std;
@@ -28,7 +29,6 @@ void SrcFile::read(string filename)
 // index >= 0 && index <= size - 1
 string& SrcFile::operator[](size_t index)
 {
-	size_t count = 0;
 	list<SrcLine>::iterator line_it;
 	for (line_it = _data.begin(); line_it != _data.end(); line_it++) {
 		if (index < line_it->size()) {
@@ -43,7 +43,58 @@ string& SrcFile::operator[](size_t index)
 	return *it;
 }
 
+const string& SrcFile::operator[](size_t index) const
+{
+    list<SrcLine>::const_iterator line_it;
+	for (line_it = _data.begin(); line_it != _data.end(); line_it++) {
+		if (index < line_it->size()) {
+			break;
+		}
+		else {
+			index -= line_it->size();
+		}
+	}
+	SrcLine::const_iterator it = line_it->begin();
+    while (index-- > 0) it++;
+	return *it;
+}
+
 size_t SrcFile::size() const
 {
 	return _size;
+}
+
+size_t SrcFile::line_count() const
+{
+	return _data.size();
+}
+
+SrcFile::line_iterator SrcFile::line_begin()
+{
+	return _data.begin();
+}
+
+SrcFile::line_iterator SrcFile::line_end()
+{
+	return _data.end();
+}
+
+SrcFile::const_line_iterator SrcFile::line_begin() const
+{
+	return _data.begin();
+}
+
+SrcFile::const_line_iterator SrcFile::line_end() const
+{
+	return _data.end();
+}
+
+SrcFile::const_iterator SrcFile::begin() const
+{
+	return SrcCIter(this, 0);
+}
+
+SrcFile::const_iterator SrcFile::end() const
+{
+	return SrcCIter(this, _size);
 }
