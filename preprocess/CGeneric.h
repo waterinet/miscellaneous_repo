@@ -16,6 +16,7 @@ public:
 	~CGeneric();
 	AssociationType first_or_default();
 private:
+	void read_src(SrcPosition beg, SrcPosition end);
 	std::string ctrl_exp;
     std::vector<AssociationType> association_list;
 	std::vector<AssociationType>::const_iterator _default;

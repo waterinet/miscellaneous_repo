@@ -1,11 +1,13 @@
 #include <iostream>
 #include <fstream>
 #include "SrcLine.h"
+#include "SrcFile.h"
 
 using namespace std;
 
 int main() 
-{
+{   
+	/*
     list<SrcLine> src_data;
 
     fstream fs;
@@ -30,5 +32,13 @@ int main()
 		cout << endl;
 		src_data.pop_front();
 	}
+	*/
+    SrcFile sf;
+	sf.read("1.txt");
+	sf[8] = "    long";
+	for (int i = 0; i < sf.size(); i++) {
+		cout << sf[i] << endl;
+	}
+
 }
 
