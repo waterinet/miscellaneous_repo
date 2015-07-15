@@ -6,6 +6,7 @@
 #include <cctype>
 #include <sstream>
 #include <cmath>
+#include <stdio.h>
 #include "numeric_traits.h"
 
 namespace pgr {
@@ -133,7 +134,7 @@ std::string to_ordinal(unsigned int num)
     }
     else {
         int units_digit = num % 10;
-        char* table[] = { "th", "st", "nd", "rd",
+        const char* table[] = { "th", "st", "nd", "rd",
               "th", "th", "th", "th", "th", "th" };
         str += table[units_digit];
     }
