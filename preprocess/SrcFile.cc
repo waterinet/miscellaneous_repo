@@ -1,5 +1,4 @@
 #include "SrcFile.h"
-#include "SrcCIter.h"
 #include <fstream>
 
 using namespace std;
@@ -87,6 +86,16 @@ SrcFile::const_line_iterator SrcFile::line_begin() const
 SrcFile::const_line_iterator SrcFile::line_end() const
 {
 	return _data.end();
+}
+
+SrcFile::iterator SrcFile::begin()
+{
+	return SrcIter(this, 0);
+}
+
+SrcFile::iterator SrcFile::end()
+{
+	return SrcIter(this, _size);
 }
 
 SrcFile::const_iterator SrcFile::begin() const

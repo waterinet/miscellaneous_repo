@@ -1,4 +1,5 @@
 #include "SrcCIter.h"
+#include "SrcFile.h"
 
 SrcCIter::SrcCIter() :
 	_data(0), _index(0)

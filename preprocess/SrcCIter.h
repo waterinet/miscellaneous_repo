@@ -1,7 +1,9 @@
 #ifndef SRCCITER_H
 #define SRCCITER_H
 
-#include "SrcFile.h"
+#include <string>
+
+class SrcFile;
 
 class SrcCIter
 {

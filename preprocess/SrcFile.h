@@ -2,8 +2,8 @@
 #define SRCFILE_H
 
 #include "SrcLine.h"
-
-class SrcCIter;
+#include "SrcCIter.h"
+#include "SrcIter.h"
 
 class SrcFile
 {
@@ -11,6 +11,7 @@ public:
 	typedef std::list<SrcLine>::iterator line_iterator;
 	typedef std::list<SrcLine>::const_iterator const_line_iterator;
     typedef SrcCIter const_iterator;
+	typedef SrcIter iterator;
 
 	SrcFile();
 	~SrcFile();
@@ -25,6 +26,8 @@ public:
 	const_line_iterator line_begin() const;
 	const_line_iterator line_end() const;
 	
+	iterator begin();
+	iterator end();
 	const_iterator begin() const;
 	const_iterator end() const;
 private: 
