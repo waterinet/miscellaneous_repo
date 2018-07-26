@@ -3,7 +3,8 @@
 
 #define WBA_STR_MAX_RESERVE_SIZE  (1024*1024)
 
-wba_str_t *wba_strnew(size_t initlen)
+/* If NULL is used for 'init' the string is initialized with zero bytes */
+wba_str_t *wba_strnewlen(const void *init, size_t initlen)
 {
     wba_str_t *ws = (wba_str_t *)malloc(sizeof(wba_str_t));
     if (!ws) {
@@ -14,10 +15,38 @@ wba_str_t *wba_strnew(size_t initlen)
         free(ws);
         return NULL;
     }
-    ws->len = 0;
+    ws->len = initlen;
     ws->cap = initlen;
-    memset(ws->buf, 0, initlen + 1);
+    if (!init) {
+        memset(ws->buf, 0, initlen);
+    } else {
+        memcpy(ws->buf, init, initlen);
+    }
+    ws->buf[initlen] = '\0';
     return ws;
+}
+
+wba_str_t *wba_strnew(size_t cap)
+{
+    wba_str_t *ws = (wba_str_t *)malloc(sizeof(wba_str_t));
+    if (!ws) {
+        return NULL;
+    }
+    ws->buf = (s8 *)malloc(cap + 1);
+    if (!ws->buf) {
+        free(ws);
+        return NULL;
+    }
+    ws->len = 0;
+    ws->cap = cap;
+    memset(ws->buf, 0, cap + 1);
+    return ws;
+}
+
+wba_str_t *wba_strnew2(const s8 *str)
+{
+    size_t len = str ? strlen(str) : 0;
+    return wba_strnewlen(str, len);
 }
 
 void wba_strfree(wba_str_t *ws)

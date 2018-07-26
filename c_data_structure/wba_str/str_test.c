@@ -88,6 +88,42 @@ void newfree_test02()
     }
 }
 
+void newfree_test03()
+{
+    wba_str_t *ws = wba_strnewlen("", 0);
+    print_str(ws);
+    ws = wba_strnewlen("empty", 0);
+    print_str(ws);
+    ws = wba_strnewlen(NULL, 0);
+    print_str(ws);
+
+    ws = wba_strnewlen(NULL, 5);
+    print_str(ws);
+    ws = wba_strnewlen("", 5);
+    print_str(ws);
+    ws = wba_strnewlen("abcde", 5);
+    print_str(ws);
+    ws = wba_strnewlen("You need speed", 5);
+    print_str(ws);
+
+    ws = wba_strnewlen("aaa", 1024);
+    print_str(ws);
+    if (wba_strnewlen("", SIZE_MAX - 1) != NULL) {
+        printf("test fail!\n");
+        exit(1);
+    }
+}
+
+void newfree_test04()
+{
+    wba_str_t *ws = wba_strnew2(NULL);
+    print_str(ws);
+    ws = wba_strnew2("");
+    print_str(ws);
+    ws = wba_strnew2("aaaa\0aaaa");
+    print_str(ws);
+}
+
 void grow_test01()
 {
     wba_str_t *ws = wba_strnew(0);
@@ -354,6 +390,8 @@ void tok_test04()
 int main() {
     //newfree_test01();
     //newfree_test02();
+    //newfree_test03();
+    newfree_test04();
     //grow_test01();
     //grow_test02();
     //cpycat_test01();
@@ -363,7 +401,7 @@ int main() {
     //cpycat_test05(wba_strncat);
     //cpycat_test05(wba_strncpy);
     //cpycat_test07();
-    cpycat_test08();
+    //cpycat_test08();
     //tok_test01();
     //tok_test02();
     //tok_test03();

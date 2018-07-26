@@ -8,11 +8,13 @@ typedef int  s32;
 
 typedef struct wba_str_s {
     size_t len;
-    size_t cap; /* capacity, cap == len + free + 1 */
+    size_t cap; /* excluding the NULL terminator */
     s8 *buf;
 } wba_str_t;
 
-wba_str_t *wba_strnew(size_t initlen);
+wba_str_t *wba_strnewlen(const void *init, size_t initlen);
+wba_str_t *wba_strnew(size_t cap);
+wba_str_t *wba_strnew2(const s8 *str);
 void wba_strfree(wba_str_t*);
 void wba_strclr(wba_str_t*);
 wba_str_t *wba_strgrow(wba_str_t*, size_t len);
