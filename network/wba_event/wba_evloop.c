@@ -365,7 +365,10 @@ s32 wba_event_assign(wba_evt_t *evt, wba_evtbase_t *base, s32 fd, s16 events,
     if (!evt || !base || !fn) {
         return 0;
     }
-
+    if (evt->flags & WBA_EVTLIST_REG) {
+        event_debug("event %p already added!", evt);
+        return 0;
+    }
     if (fd < 0) {
         fd = -1;
     }
