@@ -3,8 +3,6 @@
 #include <string.h>
 #include "skiplist.h"
 
-extern int COUNT;
-
 static sknode_t *new_node(void *obj, int n)
 {
     sknode_t *node;
@@ -56,14 +54,14 @@ static void *search_node(sklist_t *sk_list, void *key, sknode_t **pos)
     i = sk_list->level;
     while (i--) {
         /* return first matching obj */
-        while (node->link[i]) {
+        while (node->link[i] != sk_list->head) {
             node_key = sk_list->get_key(node->link[i]->obj);
             if (sk_list->cmp_key(key, node_key) <= 0) {
                 break;
             }
             node = node->link[i];
         }
-        if (!node->link[i]) {
+        if (node->link[i] == sk_list->head) {
             continue;
         }
         node_key = sk_list->get_key(node->link[i]->obj);
@@ -128,8 +126,9 @@ int sklist_insert(sklist_t *sk_list, void *obj)
         return -1;
     }
     i = sk_list->level;
+    /* link new node from top-level to bottom-level */
     while (i--) {
-        while (node->link[i]) {
+        while (node->link[i] != sk_list->head) {
             key = sk_list->get_key(obj);
             node_key = sk_list->get_key(node->link[i]->obj);
             if (sk_list->cmp_key(key, node_key) < 0) {
@@ -137,9 +136,14 @@ int sklist_insert(sklist_t *sk_list, void *obj)
             }
             node = node->link[i];
         }
+        /* 1 <= new->level <= sk_list->level */
         if (i < new->level) {
             new->link[i] = node->link[i];
             node->link[i] = new;
+            if (i == 0) {
+                new->prev = node;
+                new->link[i]->prev = new;
+            }
         }
     }
     sk_list->size++;
@@ -163,24 +167,26 @@ int sklist_delete(sklist_t *sk_list, void *key)
     i = sk_list->level;
     node = sk_list->head;
     while (i--) {
-        while (node->link[i]) {
+        while (node->link[i] != sk_list->head) {
             node_key = sk_list->get_key(node->link[i]->obj);
             if (sk_list->cmp_key(key, node_key) <= 0) {
                 break;
             }
             node = node->link[i];
         }
-        if (!node->link[i]) {
+        if (node->link[i] == sk_list->head) {
             continue;
         }
         node_key = sk_list->get_key(node->link[i]->obj);
         if (sk_list->cmp_key(key, node_key) == 0) {
             next = node->link[i];
             node->link[i] = next->link[i];
-            if (node == sk_list->head && !node->link[i]) {
+            /* this implies node == head and list[i] is empty */
+            if (node == node->link[i]) {
                 sk_list->level--;
             }
             if (i == 0) {
+                next->link[i]->prev = node;
                 destroy_node(sk_list, next);
                 sk_list->size--;
             }
@@ -193,7 +199,11 @@ int sklist_delete(sklist_t *sk_list, void *key)
 sklist_t *sklist_init(int max_level)
 {
     sklist_t *sk_list;
+    int i;
     
+    if (max_level <= 0) {
+        return NULL;
+    }
     sk_list = (sklist_t *)malloc(sizeof(sklist_t));
     if (!sk_list) {
         return NULL;
@@ -205,6 +215,10 @@ sklist_t *sklist_init(int max_level)
         return NULL;
     }
     sk_list->max_level = max_level;
+    for (i = 0; i < max_level; i++) {
+        sk_list->head->link[i] = sk_list->head;
+    }
+    sk_list->head->prev = sk_list->head;
 
     return sk_list;
 }
@@ -213,10 +227,10 @@ void sklist_free(sklist_t *sk_list)
 {
     sknode_t *node, *next;
     void *key;
-
+    
     if (sk_list) {
         node = sk_list->head->link[0];
-        while (node) {
+        while (node != sk_list->head) {
             next = node->link[0];
             key = sk_list->get_key(node->obj);
             sklist_delete(sk_list, key);
@@ -226,3 +240,4 @@ void sklist_free(sklist_t *sk_list)
         free(sk_list);
     }
 }
+

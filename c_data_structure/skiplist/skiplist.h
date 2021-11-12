@@ -3,6 +3,7 @@
 
 typedef struct sknode_s {
     struct sknode_s **link;
+    struct sknode_s *prev;
     int level;
     void *obj;
 } sknode_t;
@@ -24,5 +25,27 @@ int sklist_delete(sklist_t *sk_list, void *key);
 
 sklist_t *sklist_init(int max_level);
 void sklist_free(sklist_t *sk_list);
+
+#define sklist_foreach(node, data, list)     \
+    for (node = (list)->head->link[0], data = (typeof(data))node->obj;  \
+	     node != (list)->head;  \
+         node = node->link[0], data = (typeof(data))node->obj)
+		 
+#define sklist_foreach_safe(node, n, data, list)      \
+    for (node = (list)->head->link[0], n = node->link[0],  \
+         data = (typeof(data))node->obj; \
+         node != (list)->head;  \
+		 node = n, n = node->link[0], data = (typeof(data))node->obj)
+
+#define sklist_foreach_reverse(node, data, list)    \
+    for (node = (list)->head->prev, data = (typeof(data))node->obj;  \
+         node != (list)->head;  \
+         node = node->prev, data = (typeof(data))node->obj)
+
+#define sklist_foreach_safe_reverse(node, n, data, list)    \
+    for (node = (list)->head->prev, n = node->prev,  \
+         data = (typeof(data))node->obj;  \
+         node != (list)->head;  \
+         node = n, n = node->prev, data = (typeof(data))node->obj)
 
 #endif /* _SKIPLIST_H_ */
